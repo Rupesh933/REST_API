@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "rest_framework",
     'students',
     'api',
-    'employees'
+    'employees',
+    'learn_mixins',
 ]
 
 REST_FRAMEWORK = {

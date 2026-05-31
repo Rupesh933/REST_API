@@ -1,13 +1,15 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from students.models import Students
-from .serializers import StudentSerializer, EmployeeSerializer
+from .serializers import StudentSerializer, EmployeeSerializer, ProductSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from employees.models import Employees
 from django.http import Http404
+from learn_mixins.models import Products
+from rest_framework import mixins, generics
 
 # Create your views here.
 
@@ -105,4 +107,23 @@ class EmployeeDetails(APIView):
     def delete(self, request, pk):
         employee = self.get_objects(pk)
         employee.delete()
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_404_NOT_FOUND) 
+    
+    
+
+class Products(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Products.objects.all()
+    serializer_class = ProductSerializer
+    
+    def get(self, request):
+        return self.list(request)
+
+    def post(self, request):
+        return self.create(request)
+
+class ProductDetails(mixins.RetrieveModelMixin, generics.GenericAPIView):
+    queryset = Products.objects.all()
+    serializer_class = ProductSerializer
+    
+    def get(self, request, pk):
+        self.retrieve(request,pk)
