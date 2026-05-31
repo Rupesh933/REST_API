@@ -9,3 +9,4 @@ def students(request):
         {'id':1, 'name':'Rupesh Rana', 'age':23}
     ]
     return HttpResponse(students)
+

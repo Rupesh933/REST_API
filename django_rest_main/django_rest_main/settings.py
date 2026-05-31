@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     'students',
     'api',
+    'employees'
 ]
 
 REST_FRAMEWORK = {
