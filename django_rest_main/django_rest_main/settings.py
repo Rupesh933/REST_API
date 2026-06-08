@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_qpwg_05=dv1ufyf(^=n26c!wbp39wtm1pr*jr!!nj6!ec5a-d'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-_qpwg_05=dv1ufyf(^=n26c!wbp39wtm1pr*jr!!nj6!ec5a-d')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1', 't')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
 
 # Application definition
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     'api',
     'employees',
     'learn_mixins',
+    'Book'
 ]
 
 REST_FRAMEWORK = {
@@ -89,10 +91,21 @@ WSGI_APPLICATION = 'django_rest_main.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_DB', 'django_rest_main'),
+        'USER': os.environ.get('POSTGRES_USER', 'admin'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'qwerty'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'postgres' if os.path.exists('/.dockerenv') else '127.0.0.1'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432' if os.path.exists('/.dockerenv') else '5433'),
     }
 }
 

@@ -10,6 +10,8 @@ from employees.models import Employees
 from django.http import Http404
 from learn_mixins.models import Products
 from rest_framework import mixins, generics
+from Book.models import Book as BookModel, Author
+from .serializers import BookSerializer, AuthorSerializer
 
 # Create your views here.
 
@@ -41,7 +43,7 @@ def studentsView(request):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # print(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors)
     
 # get a single value from Student using primary key
@@ -110,8 +112,8 @@ class EmployeeDetails(APIView):
         return Response(status=status.HTTP_404_NOT_FOUND) 
     
     
-
-class Products(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+# Mixins APIView start
+class ProductList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = Products.objects.all()
     serializer_class = ProductSerializer
     
@@ -121,9 +123,29 @@ class Products(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
     def post(self, request):
         return self.create(request)
 
-class ProductDetails(mixins.RetrieveModelMixin, generics.GenericAPIView):
+class ProductDetails(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
     queryset = Products.objects.all()
     serializer_class = ProductSerializer
     
     def get(self, request, pk):
-        self.retrieve(request,pk)
+        return self.retrieve(request,pk)
+
+    def put(self, request, pk):
+        return self.update(request, pk)
+    
+    def delete(self, request, pk):
+        return self.destroy(request, pk)
+# End Mixins
+
+
+# Generic APIView start
+# class Book(generics.ListAPIView, generics.CreateAPIView):
+class BookListCreateView(generics.ListCreateAPIView):
+    queryset = BookModel.objects.all()
+    serializer_class = BookSerializer
+
+# class BookDetailsView(generics.RetrieveAPIView, generics.UpdateAPIView, generics.DestroyAPIView):
+class BookDetailsView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = BookModel.objects.all()
+    serializer_class = BookSerializer
+    lookup_field = 'pk'

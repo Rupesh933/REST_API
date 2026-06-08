@@ -10,7 +10,11 @@ urlpatterns=[
     path('employees/<int:pk>/', views.EmployeeDetails.as_view()),
 
     # Product path, here we used Mixins topics
-    path('products/', views.Products.as_view()),
+    path('products/', views.ProductList.as_view()),
     path('products/<int:pk>/', views.ProductDetails.as_view()),
+
+    # Book path, here we used Generic APIView
+    path('books/', views.BookListCreateView.as_view()),
+    path('books/<int:pk>/', views.BookDetailsView.as_view()),
 
 ]
