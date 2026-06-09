@@ -49,3 +49,16 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['id', 'title', 'isbn', 'published', 'price', 'author']
+
+
+from viewSets.models import Course, Student
+class CourseModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = '__all__'
+
+class StudentModelSerializer(serializers.ModelSerializer):
+    course = CourseModelSerializer(read_only=True)
+    class Meta:
+        model = Student
+        fields = ['id', 'name', 'age', 'grade', 'course']

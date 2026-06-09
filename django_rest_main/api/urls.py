@@ -1,5 +1,10 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register('course', views.CourseViewSet, basename='course')
+router.register('student', views.StudentViewSet, basename='student')
 
 urlpatterns=[
     path('students/', views.studentsView),
@@ -16,5 +21,9 @@ urlpatterns=[
     # Book path, here we used Generic APIView
     path('books/', views.BookListCreateView.as_view()),
     path('books/<int:pk>/', views.BookDetailsView.as_view()),
+
+    # ViewSets path
+    path('', include(router.urls)),
+    path('v1/', include(router.urls))
 
 ]
